@@ -1,0 +1,7 @@
+[package]
+name = "pdf-font"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+lopdf = "0.26.0"
