@@ -1,5 +1,5 @@
 [package]
-name = "pdf-font"
+name = "pdf-form-replace-font"
 version = "0.0.1"
 edition = "2018"
 
