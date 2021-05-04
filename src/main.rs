@@ -4,7 +4,7 @@ use lopdf::{Document, Object};
 use std::env;
 
 
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = env::args().collect();
 
     let mut opts = Options::new();
@@ -20,12 +20,14 @@ fn main() {
     let input_pdf = if opt_matches.free.is_empty() {
         "-"
     } else {
-        opt_matches.free[0]
+        &opt_matches.free[0]
     };
 
-    let output_pdf = opt_matches.opt_str("output").unwrap_or("-");
+    let find = opt_matches.opt_str("find").unwrap();
+    let replace = opt_matches.opt_str("replace").unwrap();
+    let output_pdf = opt_matches.opt_str("output").unwrap_or("-".to_owned());
 
-    let mut doc = Document::load("./f1040.pdf").unwrap();
+    let mut doc = Document::load(input_pdf).unwrap();
 
     for (_, mut obj) in &mut doc.objects {
         match &mut obj {
@@ -38,7 +40,7 @@ fn main() {
 
                         let new_properties = std::str::from_utf8(properties)
                             .unwrap()
-                            .replace("HelveticaLTStd-Bold", "CourierNewPSMT");
+                            .replace(&find, &replace);
 
                         *properties = new_properties.into_bytes();
                     }
@@ -48,5 +50,7 @@ fn main() {
         }
     }
 
-    doc.save("./new.pdf").unwrap();
+    doc.save(output_pdf).unwrap();
+
+    Ok(())
 }
