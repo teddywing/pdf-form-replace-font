@@ -22,14 +22,28 @@ fn run () -> Result<(), anyhow::Error> {
     let args: Vec<String> = env::args().collect();
 
     let mut opts = Options::new();
-    opts.reqopt("f", "find", "original font", "");
-    opts.reqopt("r", "replace", "replacement font", "");
+    opts.optopt("f", "find", "original font", "");
+    opts.optopt("r", "replace", "replacement font", "");
     opts.optopt("o", "output", "output file", "FILE");
 
     opts.optflag("h", "help", "print this help menu");
     opts.optflag("V", "version", "show the program version");
 
     let opt_matches = opts.parse(&args[1..])?;
+
+    if opt_matches.opt_present("h") {
+        print!(
+            "{}",
+            opts.usage("usage: pdf-form-replace-font --fill ORIGINAL_FONT --replace REPLACEMENT_FONT [-o FILE] PDF_FILE"),
+        );
+
+        process::exit(exitcode::USAGE);
+    }
+
+    if opt_matches.opt_present("V") {
+        println!("{}", env!("CARGO_PKG_VERSION"));
+        process::exit(exitcode::OK);
+    }
 
     let input_pdf = if opt_matches.free.is_empty() {
         "-"
@@ -38,9 +52,9 @@ fn run () -> Result<(), anyhow::Error> {
     };
 
     let find = opt_matches.opt_str("find")
-        .ok_or(anyhow::anyhow!("no original font"))?;
+        .ok_or(anyhow::anyhow!("required option 'find' missing"))?;
     let replace = opt_matches.opt_str("replace")
-        .ok_or(anyhow::anyhow!("no replacement font"))?;
+        .ok_or(anyhow::anyhow!("required option 'replace' missing"))?;
     let output_pdf = opt_matches.opt_str("output")
         .unwrap_or("-".to_owned());
 
