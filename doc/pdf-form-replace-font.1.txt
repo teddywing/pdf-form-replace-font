@@ -1,0 +1,36 @@
+pdf-form-replace-font(1)
+========================
+
+NAME
+----
+pdf-form-replace-font - Replace a font in a PDF form
+
+SYNOPSIS
+--------
+*pdf-form-replace-font* --fill 'original_font' --replace 'replacement_font' [options] ['pdf_file']
+
+DESCRIPTION
+-----------
+Replace a font used in the input PDF's text form fields. If no input path is
+given, the PDF will be read from standard input.
+
+Given a PostScript font name used in text fields in the input PDF, those
+fields will be changed to use the replacement typeface.
+
+OPTIONS
+-------
+-f, --find::
+	PostScript name of the font that will be replaced.
+
+-r, --replace::
+	PostScript name of the replacement font.
+
+-o, --output::
+	The output PDF path. If this option is not given, or if the value is given
+	as "-", the PDF will output to standard output.
+
+-h, --help::
+	Print usage help.
+
+-V, --version::
+	Print the program version.
