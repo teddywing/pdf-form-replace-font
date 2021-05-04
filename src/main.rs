@@ -34,7 +34,7 @@ fn run () -> Result<(), anyhow::Error> {
     if opt_matches.opt_present("h") {
         print!(
             "{}",
-            opts.usage("usage: pdf-form-replace-font --fill ORIGINAL_FONT --replace REPLACEMENT_FONT [-o FILE] PDF_FILE"),
+            opts.usage("usage: pdf-form-replace-font --fill ORIGINAL_FONT --replace REPLACEMENT_FONT [-o FILE] [PDF_FILE]"),
         );
 
         process::exit(exitcode::USAGE);
