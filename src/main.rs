@@ -27,7 +27,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let replace = opt_matches.opt_str("replace").unwrap();
     let output_pdf = opt_matches.opt_str("output").unwrap_or("-".to_owned());
 
-    let mut doc = Document::load(input_pdf).unwrap();
+    let mut doc = if input_pdf == "=" {
+        Document::load_from(&mut std::io::stdin()).unwrap()
+    } else {
+        Document::load(input_pdf).unwrap()
+    };
 
     for (_, mut obj) in &mut doc.objects {
         match &mut obj {
@@ -50,7 +54,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
-    doc.save(output_pdf).unwrap();
+    if output_pdf == "-" {
+        doc.save_to(&mut std::io::stdout()).unwrap();
+    } else {
+        doc.save(output_pdf).unwrap();
+    }
 
     Ok(())
 }
