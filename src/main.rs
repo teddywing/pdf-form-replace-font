@@ -1,8 +1,10 @@
 use anyhow::{self, Context};
+use exitcode;
 use getopts::Options;
 use lopdf::{Document, Object};
 
 use std::env;
+use std::process;
 
 
 fn main() {
@@ -10,6 +12,8 @@ fn main() {
         Ok(_) => (),
         Err(e) => {
             eprintln!("error: {}", e);
+
+            process::exit(exitcode::SOFTWARE);
         },
     };
 }

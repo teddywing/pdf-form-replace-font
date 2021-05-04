@@ -5,5 +5,6 @@ edition = "2018"
 
 [dependencies]
 anyhow = "1.0.40"
+exitcode = "1.1.2"
 getopts = "0.2.21"
 lopdf = "0.26.0"
