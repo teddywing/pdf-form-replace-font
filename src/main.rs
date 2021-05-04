@@ -1,10 +1,20 @@
+use anyhow::{self, Context};
 use getopts::Options;
 use lopdf::{Document, Object};
 
 use std::env;
 
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn main() {
+    match run() {
+        Ok(_) => (),
+        Err(e) => {
+            eprintln!("error: {}", e);
+        },
+    };
+}
+
+fn run () -> Result<(), anyhow::Error> {
     let args: Vec<String> = env::args().collect();
 
     let mut opts = Options::new();
@@ -23,27 +33,34 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         &opt_matches.free[0]
     };
 
-    let find = opt_matches.opt_str("find").unwrap();
-    let replace = opt_matches.opt_str("replace").unwrap();
-    let output_pdf = opt_matches.opt_str("output").unwrap_or("-".to_owned());
+    let find = opt_matches.opt_str("find")
+        .ok_or(anyhow::anyhow!("no original font"))?;
+    let replace = opt_matches.opt_str("replace")
+        .ok_or(anyhow::anyhow!("no replacement font"))?;
+    let output_pdf = opt_matches.opt_str("output")
+        .unwrap_or("-".to_owned());
 
     let mut doc = if input_pdf == "=" {
-        Document::load_from(&mut std::io::stdin()).unwrap()
+        Document::load_from(&mut std::io::stdin())
+            .context("failed reading from stdin")?
     } else {
-        Document::load(input_pdf).unwrap()
+        Document::load(input_pdf)
+            .with_context(|| format!("failed to read PDF '{}'", input_pdf))?
     };
 
     for (_, mut obj) in &mut doc.objects {
         match &mut obj {
             Object::Dictionary(ref mut d) => {
                 for (k, v) in d.iter_mut() {
-                    let key = std::str::from_utf8(k).unwrap();
+                    let key = std::str::from_utf8(k)
+                        .context("unable to convert PDF object key to UTF-8")?;
 
                     if key == "DA" {
-                        let properties = v.as_str_mut().unwrap();
+                        let properties = v.as_str_mut()
+                            .context("unable to get properties of form field")?;
 
                         let new_properties = std::str::from_utf8(properties)
-                            .unwrap()
+                            .context("unable to convert form field properties to UTF-8")?
                             .replace(&find, &replace);
 
                         *properties = new_properties.into_bytes();
@@ -55,9 +72,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     if output_pdf == "-" {
-        doc.save_to(&mut std::io::stdout()).unwrap();
+        doc.save_to(&mut std::io::stdout())
+            .context("failed writing to stdout")?;
     } else {
-        doc.save(output_pdf).unwrap();
+        doc.save(&output_pdf)
+            .with_context(|| format!("failed to write PDF '{}'", output_pdf))?;
     }
 
     Ok(())
