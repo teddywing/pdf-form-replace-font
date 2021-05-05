@@ -1,7 +1,7 @@
 pdf-form-replace-font
 =====================
 
-Replace a given font in a PDF’s text fields with a different one.
+Replace a given font in a PDF form’s text fields with a different one.
 
 
 ## Usage
