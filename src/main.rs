@@ -26,6 +26,9 @@ use std::env;
 use std::process;
 
 
+const PDF_TEXT_FIELD_DEFAULT_APPEARANCE_KEY: &'static str = "DA";
+
+
 fn main() {
     match run() {
         Ok(_) => (),
@@ -92,7 +95,7 @@ fn run () -> Result<(), anyhow::Error> {
                     let key = std::str::from_utf8(k)
                         .context("unable to convert PDF object key to UTF-8")?;
 
-                    if key == "DA" {
+                    if key == PDF_TEXT_FIELD_DEFAULT_APPEARANCE_KEY {
                         let properties = v.as_str_mut()
                             .context("unable to get properties of form field")?;
 
