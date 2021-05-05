@@ -34,3 +34,8 @@ OPTIONS
 
 -V, --version::
 	Print the program version.
+
+LIMITATIONS
+-----------
+* The replacement font is not embedded in the output PDF.
+* Font size cannot be changed.
