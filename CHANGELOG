@@ -1,0 +1,13 @@
+CHANGELOG
+=========
+
+v0.0.2 (2021-05-06):
+	Fixes:
+
+	* Previously, a free argument of "=" would cause the program to read a PDF
+	  from standard input. This has been corrected to "-" instead of "=".
+
+v0.0.1 (2021-05-05):
+	First public release.
+
+ vim:tw=80:comments=:fo+=n:formatlistpat=^\\s*\\*\\s*
