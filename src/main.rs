@@ -80,7 +80,7 @@ fn run () -> Result<(), anyhow::Error> {
     let output_pdf = opt_matches.opt_str("output")
         .unwrap_or("-".to_owned());
 
-    let mut doc = if input_pdf == "=" {
+    let mut doc = if input_pdf == "-" {
         Document::load_from(&mut std::io::stdin())
             .context("failed reading from stdin")?
     } else {
